@@ -1,11 +1,16 @@
 #include <stdio.h>
-#include "sum.h"
-#include "multiply.h"
+#include <strings.h>
+#include "command.h"
 
-int main() {
-   int s = sum(1, 2);
-   int mul = multiply(2, 3);
+void main() {
+    char buffer[1024];
+    char ** arr;
+    command c;
+    bzero(&c, sizeof(c));
 
-   printf("Sum is %i", s);
-   printf("Multiply is is %i", mul);
+    printf("Enter a command: \n");
+    fgets(buffer, 1024, stdin);
+
+    printf("Buffer is %s", buffer);
+    parse_command(buffer, &c);
 }
