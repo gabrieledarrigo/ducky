@@ -1,12 +1,22 @@
-#include "../include/tap.h"
+#include "../lib/greatest.h"
 #include "../src/sum.h"
 
-int main () {
-    plan(2);
+TEST should_add_two_numbers(void) {
     int a = 1;
     int b = 2;
 
-    ok(sum(a, b) == 3, "1 + 2 = 3");
-    ok(1 < 2, "1 is < than 2");
-    done_testing();
+    ASSERT_EQ(sum(a, b), 3);
+    PASS();
+}
+
+SUITE(suite) {
+    RUN_TEST(should_add_two_numbers);
+}
+
+GREATEST_MAIN_DEFS();
+
+int main(int argc, char *argv[]) {
+    GREATEST_MAIN_BEGIN();
+    RUN_SUITE(suite);
+    GREATEST_MAIN_END();
 }
