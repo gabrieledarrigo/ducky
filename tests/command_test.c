@@ -8,40 +8,28 @@ TEST should_parse_a_SET_command_from_a_string(void) {
 
     ASSERT_EQ(0, result);
     ASSERT_EQ(SET, c.command_type);
-    ASSERT_EQ(10, c.ttl);
     ASSERT_STR_EQ("key", c.key);
     ASSERT_STR_EQ("string", c.data);
     PASS();
 }
 
-TEST should_return_an_error_if_the_SET_command_is_malformed(void) {
+TEST should_return_ERR_NO_KEY_if_the_SET_command_has_not_an_associated_key(void) {
     command c;
-    char buffer[] = "SET key 10";
+    char buffer[] = "SET";
     int result = parse_command(buffer, &c);
 
-    printf("result %i", result);
-
-    ASSERT_EQ(ERR_SET_MALFORMED, result);
+    ASSERT_EQ(ERR_NO_KEY, result);
     PASS();
 }
 
-TEST should_return_an_error_if_ttl_is_lower_than_0(void) {
+TEST should_return_ERR_NO_DATA_if_the_SET_command_has_no_data_associated(void) {
     command c;
-    char buffer[] = "SET key -1 string";
+    char buffer[] = "SET key 10 ";
     int result = parse_command(buffer, &c);
 
-    ASSERT_EQ(ERR_TTL_ZERO, result);
+    ASSERT_EQ(ERR_NO_DATA, result);
     PASS();
 }
-
-//TEST should_return_an_error_if_data_is_empty(void) {
-//    command c;
-//    char buffer[] = "SET key 10 ";
-//    int result = parse_command(buffer, &c);
-//
-//    ASSERT_EQ(ERR_DATA_EMPTY, result);
-//    PASS();
-//}
 
 TEST should_parse_a_GET_command_from_a_string(void) {
     command c;
@@ -54,16 +42,16 @@ TEST should_parse_a_GET_command_from_a_string(void) {
     PASS();
 }
 
-TEST should_return_an_error_if_the_GET_command_has_not_the_associated_key(void) {
+TEST should_return_ERR_NO_KEY_if_the_GET_command_has_not_an_associated_key(void) {
     command get;
     char buffer[] = "GET";
     int result = parse_command(buffer, &get);
 
-    ASSERT_EQ(ERR_NO_KEY, result);
-    PASS();
+        ASSERT_EQ(ERR_NO_KEY, result);
+        PASS();
 }
 
-TEST should_return_an_error_if_the_GET_or_SET_key_length_is_greater_than_100_chars(void) {
+TEST should_return_ERR_KEY_LENGTH_if_the_GET_or_SET_key_length_is_greater_than_100_chars(void) {
     int result;
     command get, set;
     char get_buffer[] = "GET abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdebcde 10 string";
@@ -79,14 +67,23 @@ TEST should_return_an_error_if_the_GET_or_SET_key_length_is_greater_than_100_cha
     PASS();
 }
 
+TEST should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized() {
+    command c;
+    char buffer[] = "FOO BAR key 10 20";
+    int result = parse_command(buffer, &c);
+
+        ASSERT_EQ(ERR_COMMAND_NOT_RECOGNIZED, result);
+        PASS();
+}
+
 SUITE(suite) {
     RUN_TEST(should_parse_a_SET_command_from_a_string);
-    RUN_TEST(should_return_an_error_if_the_SET_command_is_malformed);
-    RUN_TEST(should_return_an_error_if_ttl_is_lower_than_0);
-//    RUN_TEST(should_return_an_error_if_data_is_empty);
+    RUN_TEST(should_return_ERR_NO_KEY_if_the_SET_command_has_not_an_associated_key);
+    RUN_TEST(should_return_ERR_NO_DATA_if_the_SET_command_has_no_data_associated);
     RUN_TEST(should_parse_a_GET_command_from_a_string);
-    RUN_TEST(should_return_an_error_if_the_GET_or_SET_key_length_is_greater_than_100_chars);
-    RUN_TEST(should_return_an_error_if_the_GET_command_has_not_the_associated_key);
+    RUN_TEST(should_return_ERR_NO_KEY_if_the_GET_command_has_not_an_associated_key);
+    RUN_TEST(should_return_ERR_KEY_LENGTH_if_the_GET_or_SET_key_length_is_greater_than_100_chars);
+    RUN_TEST(should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized);
 }
 
 GREATEST_MAIN_DEFS();
