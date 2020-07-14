@@ -67,7 +67,7 @@ TEST should_return_ERR_KEY_LENGTH_if_the_GET_or_SET_key_length_is_greater_than_1
     PASS();
 }
 
-TEST should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized() {
+TEST should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized(void) {
     command c;
     char buffer[] = "FOO BAR key 10 20";
     int result = parse_command(buffer, &c);
@@ -76,7 +76,7 @@ TEST should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized()
     PASS();
 }
 
-TEST should_return_ERR_MAX_DATA_SIZE_if_the_command_size_is_greater_than_1MB() {
+TEST should_return_ERR_MAX_DATA_SIZE_if_the_command_size_is_greater_than_1MB(void) {
     command c;
     int size = (1024 * 1024);
     char more_than_1MB[size];
