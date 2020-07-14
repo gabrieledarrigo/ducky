@@ -4,11 +4,13 @@
 #include <stddef.h>
 
 #define MAX_KEY_LENGTH 100
+#define MAX_DATA_SIZE 1048576
 
 #define ERR_COMMAND_NOT_RECOGNIZED -1
-#define ERR_KEY_LENGTH -2
-#define ERR_NO_KEY -3
-#define ERR_NO_DATA -4
+#define ERR_MAX_DATA_SIZE -2
+#define ERR_KEY_LENGTH -3
+#define ERR_NO_KEY -4
+#define ERR_NO_DATA -5
 
 typedef struct command {
     enum {

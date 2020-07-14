@@ -72,8 +72,25 @@ TEST should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized()
     char buffer[] = "FOO BAR key 10 20";
     int result = parse_command(buffer, &c);
 
-        ASSERT_EQ(ERR_COMMAND_NOT_RECOGNIZED, result);
-        PASS();
+    ASSERT_EQ(ERR_COMMAND_NOT_RECOGNIZED, result);
+    PASS();
+}
+
+TEST should_return_ERR_MAX_DATA_SIZE_if_the_command_size_is_greater_than_1MB() {
+    command c;
+    int size = (1024 * 1024);
+    char more_than_1MB[size];
+    char buffer[size + 1000];
+
+    for (int i = 0; i < size; ++i) {
+        more_than_1MB[i] = 'f';
+    }
+
+    sprintf(buffer, "SET key %s", more_than_1MB);
+    int result = parse_command(buffer, &c);
+
+    ASSERT_EQ(ERR_MAX_DATA_SIZE, result);
+    PASS();
 }
 
 SUITE(suite) {
@@ -84,6 +101,7 @@ SUITE(suite) {
     RUN_TEST(should_return_ERR_NO_KEY_if_the_GET_command_has_not_an_associated_key);
     RUN_TEST(should_return_ERR_KEY_LENGTH_if_the_GET_or_SET_key_length_is_greater_than_100_chars);
     RUN_TEST(should_return_ERR_COMMAND_NOT_RECOGNIZED_if_the_command_is_not_recognized);
+    RUN_TEST(should_return_ERR_MAX_DATA_SIZE_if_the_command_size_is_greater_than_1MB);
 }
 
 GREATEST_MAIN_DEFS();
