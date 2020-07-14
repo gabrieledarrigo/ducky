@@ -3,7 +3,7 @@
 
 TEST should_parse_a_SET_command_from_a_string(void) {
     command c;
-    char buffer[] = "SET key 10 string";
+    char buffer[] = "SET key string";
     int result = parse_command(buffer, &c);
 
     ASSERT_EQ(0, result);
@@ -24,7 +24,7 @@ TEST should_return_ERR_NO_KEY_if_the_SET_command_has_not_an_associated_key(void)
 
 TEST should_return_ERR_NO_DATA_if_the_SET_command_has_no_data_associated(void) {
     command c;
-    char buffer[] = "SET key 10 ";
+    char buffer[] = "SET key ";
     int result = parse_command(buffer, &c);
 
     ASSERT_EQ(ERR_NO_DATA, result);

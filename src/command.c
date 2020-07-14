@@ -7,7 +7,7 @@ int parse_command(char * buffer, command* c) {
     int i = 0;
     char *delimiter = " ";
     char *token = strtok(buffer, delimiter);
-    char **arr = calloc(4, sizeof(char *));
+    char **arr = calloc(3, sizeof(char *));
 
     while (token != NULL) {
         token[strcspn(token, "\n")] = '\0'; // Remove trailing new lines
@@ -33,13 +33,13 @@ int parse_command(char * buffer, command* c) {
         }
 
         // Validate data
-        if (arr[3] == NULL) {
+        if (arr[2] == NULL) {
             return ERR_NO_DATA;
         }
 
         c->command_type = SET;
         c->key = arr[1];
-        c->data = arr[3];
+        c->data = arr[2];
     }
 
     // Parse GET command
