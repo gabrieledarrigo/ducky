@@ -4,7 +4,7 @@
 TEST should_create_a_new_cache(void) {
     cache *c = cache_new();
 
-    ASSERT_EQ(1024, c->size);
+    ASSERT_EQ(INITIAL_CACHE_SIZE, c->size);
     ASSERT_EQ(0, c->count);
 
     cache_delete(c);
@@ -64,8 +64,21 @@ TEST should_return_the_value_of_the_associated_key_if_it_exists(void) {
     PASS();
 }
 
+TEST should_return_NULL_if_the_associated_key_doesnt_exists(void) {
+    cache *c = cache_new();
+    char * value = get(c, "key");
+
+    ASSERT_EQ(NULL, value);
+
+    cache_delete(c);
+    PASS();
+}
+
 //TEST should_delete_all_element_in_the_cache(void) {
 //    cache *c = cache_new();
+//
+//    set(c, "key", "value1");
+//    set(c, "key", "value2");
 //    cache_delete(c);
 //
 //    ASSERT_EQ(0, c->size);
@@ -87,6 +100,7 @@ SUITE(suite) {
     RUN_TEST(should_insert_a_new_node_in_the_cache);
     RUN_TEST(should_update_a_value_with_the_same_key);
     RUN_TEST(should_return_the_value_of_the_associated_key_if_it_exists);
+    RUN_TEST(should_return_NULL_if_the_associated_key_doesnt_exists);
 //    RUN_TEST(should_delete_all_element_in_the_cache);
 }
 

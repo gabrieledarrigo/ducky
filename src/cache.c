@@ -32,7 +32,7 @@ cache *cache_new() {
         exit(EXIT_FAILURE);
     }
 
-    c->size = 512;
+    c->size = INITIAL_CACHE_SIZE;
     c->count = 0;
     c->nodes = calloc((size_t) c->size, sizeof(node *));
 
@@ -64,6 +64,24 @@ void cache_delete(cache *c) {
 
     free(c->nodes);
     free(c);
+}
+
+char* get(cache *c, const char *key) {
+    int index = get_hash(key, c->size, 0);
+    node *current_node = c->nodes[index];
+
+    int i = 1;
+    while (current_node != NULL) {
+        if(strcmp(current_node->key, key) == 0) {
+            return current_node->value;
+        }
+
+        index = get_hash(key, c->size, i);
+        current_node = c->nodes[index];
+        i++;
+    }
+
+    return NULL;
 }
 
 void set(cache *c, const char * key, const char *value) {

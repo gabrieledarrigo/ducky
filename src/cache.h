@@ -3,6 +3,7 @@
 
 #define CACHE_PRIME_1 173
 #define CACHE_PRIME_2 197
+#define INITIAL_CACHE_SIZE 512
 
 typedef struct node {
     char *key;
