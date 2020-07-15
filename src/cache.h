@@ -1,8 +1,8 @@
 #ifndef DUCKY_CACHE_H
 #define DUCKY_CACHE_H
 
-#define CACHE_PRIME_1 23893
-#define CACHE_PRIME_2 42937
+#define CACHE_PRIME_1 173
+#define CACHE_PRIME_2 197
 
 typedef struct node {
     char *key;
@@ -19,8 +19,10 @@ int hash(const char * string, int prime, int size);
 
 cache *cache_new();
 
-char *get(cache c, const char *key);
+void cache_delete(cache *c);
 
-char *set(cache c, const char *key, const char *value);
+char* get(cache *c, const char *key);
+
+void set(cache *c, const char *key, const char *value);
 
 #endif

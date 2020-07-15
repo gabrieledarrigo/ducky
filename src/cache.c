@@ -32,7 +32,7 @@ cache *cache_new() {
         exit(EXIT_FAILURE);
     }
 
-    c->size = 1024;
+    c->size = 512;
     c->count = 0;
     c->nodes = calloc((size_t) c->size, sizeof(node *));
 
@@ -43,4 +43,58 @@ cache *cache_new() {
     }
 
     return c;
+}
+
+static void delete_node(node * n) {
+    free(n->key);
+    free(n->value);
+    free(n);
+}
+
+void cache_delete(cache *c) {
+    for (int i = 0; i < c->size; i++) {
+        node *n = c->nodes[i];
+
+        if (n != NULL) {
+            free(n->key);
+            free(n->value);
+            free(n);
+        }
+    }
+
+    free(c->nodes);
+    free(c);
+}
+
+void set(cache *c, const char * key, const char *value) {
+    node *n = malloc(sizeof(node));
+
+    if (n == NULL) {
+        perror("Cannot instantiate a single node");
+        exit(EXIT_FAILURE);
+    }
+
+    n->key = strdup(key);
+    n->value = strdup(value);
+    int index = get_hash(n->key, c->size, 0);
+    node * current_node = c->nodes[index];
+
+    // Search for an empty position in case of collision
+    int i = 1;
+    while (current_node != NULL) {
+        // If an element with the same key exists,
+        // delete it and insert the new one
+        if (strcmp(current_node->key, key) == 0) {
+            delete_node(current_node);
+            c->nodes[index] = n;
+            return;
+        }
+
+        index = get_hash(n->key, c->size, i); // Recalculate the hash with a different attempt value
+        current_node = c->nodes[index];
+        i++;
+    }
+
+    c->nodes[index] = n;
+    c->count++;
 }

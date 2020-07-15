@@ -6,18 +6,88 @@ TEST should_create_a_new_cache(void) {
 
     ASSERT_EQ(1024, c->size);
     ASSERT_EQ(0, c->count);
+
+    cache_delete(c);
+    PASS();
 }
+
+TEST should_insert_a_new_node_in_the_cache(void) {
+    cache *c = cache_new();
+
+    set(c, "key", "value");
+
+    ASSERT_EQ(1, c->count);
+
+    for (int i = 0; i < c->size; i++) {
+        node * current_node = c->nodes[i];
+
+        if (c->nodes[i] != NULL) {
+            ASSERT_STR_EQ("key", current_node->key);
+            ASSERT_STR_EQ("value", current_node->value);
+        }
+    }
+
+    cache_delete(c);
+    PASS();
+}
+
+TEST should_update_a_value_with_the_same_key(void) {
+    cache *c = cache_new();
+
+    set(c, "key", "value1");
+    set(c, "key", "value2");
+
+    ASSERT_EQ(1, c->count);
+
+    for (int i = 0; i < c->size; i++) {
+        node * current_node = c->nodes[i];
+
+        if (c->nodes[i] != NULL) {
+            ASSERT_STR_EQ("key", current_node->key);
+            ASSERT_STR_EQ("value2", current_node->value);
+        }
+    }
+
+    cache_delete(c);
+    PASS();
+}
+
+TEST should_return_the_value_of_the_associated_key_if_it_exists(void) {
+    cache *c = cache_new();
+
+    set(c, "key", "value");
+    char * value = get(c, "key");
+
+    ASSERT_STR_EQ("value", value);
+
+    cache_delete(c);
+    PASS();
+}
+
+//TEST should_delete_all_element_in_the_cache(void) {
+//    cache *c = cache_new();
+//    cache_delete(c);
+//
+//    ASSERT_EQ(0, c->size);
+//    ASSERT_EQ(0, c->count);
+//    PASS();
+//}
 
 TEST should_return_the_same_hash_given_the_same_value(void) {
     int first = hash("string", CACHE_PRIME_1,1024);
     int second = hash("string", CACHE_PRIME_1,1024);
 
     ASSERT_EQ(first, second);
+    PASS();
 }
 
 SUITE(suite) {
     RUN_TEST(should_return_the_same_hash_given_the_same_value);
-//    RUN_TEST(should_create_a_new_cache);
+    RUN_TEST(should_create_a_new_cache);
+    RUN_TEST(should_insert_a_new_node_in_the_cache);
+    RUN_TEST(should_update_a_value_with_the_same_key);
+    RUN_TEST(should_return_the_value_of_the_associated_key_if_it_exists);
+//    RUN_TEST(should_delete_all_element_in_the_cache);
 }
 
 GREATEST_MAIN_DEFS();
