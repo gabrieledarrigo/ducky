@@ -31,6 +31,24 @@ TEST should_insert_a_new_node_in_the_cache(void) {
     PASS();
 }
 
+TEST should_support_the_insertion_of_a_lot_of_entry(void) {
+    cache *c = cache_new();
+    char key[10];
+    char value[10];
+
+    for(int i = 0; i < INITIAL_CACHE_SIZE; i++) {
+        sprintf(key, "key %i", i);
+        sprintf(value, "value %i", i);
+
+        set(c, key, value);
+    }
+
+    ASSERT_EQ(INITIAL_CACHE_SIZE, c->count);
+
+    cache_delete(c);
+    PASS();
+}
+
 TEST should_update_a_value_with_the_same_key(void) {
     cache *c = cache_new();
 
@@ -101,6 +119,7 @@ SUITE(suite) {
     RUN_TEST(should_update_a_value_with_the_same_key);
     RUN_TEST(should_return_the_value_of_the_associated_key_if_it_exists);
     RUN_TEST(should_return_NULL_if_the_associated_key_doesnt_exists);
+    RUN_TEST(should_support_the_insertion_of_a_lot_of_entry);
 //    RUN_TEST(should_delete_all_element_in_the_cache);
 }
 
