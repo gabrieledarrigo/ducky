@@ -24,7 +24,7 @@ static int get_hash(const char *string, int num_nodes, int attempt) {
     return (first_hash + attempt * (second_hash + 1)) % num_nodes;
 }
 
-cache *cache_new() {
+static cache *cache_new_sized(int size) {
     cache *c = malloc(sizeof(cache));
 
     if (c == NULL) {
@@ -32,7 +32,7 @@ cache *cache_new() {
         exit(EXIT_FAILURE);
     }
 
-    c->size = INITIAL_CACHE_SIZE;
+    c->size = size;
     c->count = 0;
     c->nodes = calloc((size_t) c->size, sizeof(node *));
 
@@ -43,6 +43,10 @@ cache *cache_new() {
     }
 
     return c;
+}
+
+cache *cache_new() {
+    return cache_new_sized(INITIAL_CACHE_SIZE);
 }
 
 static void delete_node(node * n) {
@@ -66,10 +70,41 @@ void cache_delete(cache *c) {
     free(c);
 }
 
+static void resize(cache *to_resize, int size) {
+    if (size < INITIAL_CACHE_SIZE) {
+        return;
+    }
+
+    // Create a new temporary cache for the resizing
+    cache *tmp_cache = cache_new_sized(size);
+
+    //  Insert all nodes into the new cache
+    for (int i = 0; i < to_resize->size; i++) {
+        node *n = to_resize->nodes[i];
+
+        if (n != NULL) {
+            set(tmp_cache, n->key, n->value);
+        }
+    }
+
+    // Swap between temp and actual cache
+    int tmp_size = to_resize->size;
+    to_resize->size = tmp_cache->size;
+    tmp_cache->size = tmp_size;
+
+    node **tmp_nodes = to_resize->nodes;
+    to_resize->nodes = tmp_cache->nodes;
+    tmp_cache->nodes = tmp_nodes;
+
+    // Delete the temporary cache
+    cache_delete(tmp_cache);
+}
+
 char* get(cache *c, const char *key) {
     int index = get_hash(key, c->size, 0);
     node *current_node = c->nodes[index];
 
+    // Search for the node with the same key
     int i = 1;
     while (current_node != NULL) {
         if(strcmp(current_node->key, key) == 0) {
@@ -85,6 +120,14 @@ char* get(cache *c, const char *key) {
 }
 
 void set(cache *c, const char * key, const char *value) {
+    int load = (c->count * 100) / c->size;
+
+    // If the cache load is greater than 70% resize it up to the double
+    // of the actual size
+    if (load > 70) {
+        resize(c, c->size * 2);
+    }
+
     node *n = malloc(sizeof(node));
 
     if (n == NULL) {

@@ -36,14 +36,14 @@ TEST should_support_the_insertion_of_a_lot_of_entry(void) {
     char key[10];
     char value[10];
 
-    for(int i = 0; i < INITIAL_CACHE_SIZE; i++) {
+    for(int i = 0; i < 1000; i++) {
         sprintf(key, "key %i", i);
         sprintf(value, "value %i", i);
 
         set(c, key, value);
     }
 
-    ASSERT_EQ(INITIAL_CACHE_SIZE, c->count);
+    ASSERT_EQ(1000, c->count);
 
     cache_delete(c);
     PASS();
@@ -92,17 +92,31 @@ TEST should_return_NULL_if_the_associated_key_doesnt_exists(void) {
     PASS();
 }
 
-//TEST should_delete_all_element_in_the_cache(void) {
-//    cache *c = cache_new();
-//
-//    set(c, "key", "value1");
-//    set(c, "key", "value2");
-//    cache_delete(c);
-//
-//    ASSERT_EQ(0, c->size);
-//    ASSERT_EQ(0, c->count);
-//    PASS();
-//}
+TEST should_resize_up_to_the_double_size_when_the_cache_is_full_at_70_percent(void) {
+    cache *c = cache_new();
+
+    char key[10];
+    char value[10];
+    int fill = 91; // 90 is 70% of INITIAL_CACHE_SIZE(which is 128)
+
+    for (int i = 0; i < fill; i++) {
+        sprintf(key, "key %i", i);
+        sprintf(value, "value %i", i);
+
+        set(c, key, value);
+    }
+
+    ASSERT_EQ(INITIAL_CACHE_SIZE, c->size);
+    ASSERT_EQ(fill, c->count);
+
+    set(c, "key resize", "value resize");
+
+    ASSERT_EQ(256, c->size);
+    ASSERT_EQ(++fill, c->count);
+
+    cache_delete(c);
+    PASS();
+}
 
 TEST should_return_the_same_hash_given_the_same_value(void) {
     int first = hash("string", CACHE_PRIME_1,1024);
@@ -120,7 +134,7 @@ SUITE(suite) {
     RUN_TEST(should_return_the_value_of_the_associated_key_if_it_exists);
     RUN_TEST(should_return_NULL_if_the_associated_key_doesnt_exists);
     RUN_TEST(should_support_the_insertion_of_a_lot_of_entry);
-//    RUN_TEST(should_delete_all_element_in_the_cache);
+    RUN_TEST(should_resize_up_to_the_double_size_when_the_cache_is_full_at_70_percent);
 }
 
 GREATEST_MAIN_DEFS();
