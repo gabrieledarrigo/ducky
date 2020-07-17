@@ -1,4 +1,5 @@
 #include "../lib/greatest.h"
+#include "../src/errors.h"
 #include "../src/command.h"
 
 TEST should_parse_a_SET_command_from_a_string(void) {

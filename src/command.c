@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include "errors.h"
 #include "command.h"
 
 int parse_command(char *buffer, command *c) {
