@@ -1,8 +1,8 @@
 #ifndef DUCKY_CACHE_H
 #define DUCKY_CACHE_H
 
-#define CACHE_PRIME_1 173
-#define CACHE_PRIME_2 197
+#define CACHE_PRIME_1 151
+#define CACHE_PRIME_2 163
 #define INITIAL_CACHE_SIZE 128
 
 typedef struct node {
@@ -13,6 +13,7 @@ typedef struct node {
 typedef struct cache {
     int count;
     int size;
+    int load;
     node **nodes;
 } cache;
 

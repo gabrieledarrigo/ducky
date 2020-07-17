@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "cache.h"
+#include "prime.h"
 
 int hash(const char *string, int prime, int size) {
     long hash = 0;
@@ -32,8 +33,9 @@ static cache *cache_new_sized(int size) {
         exit(EXIT_FAILURE);
     }
 
-    c->size = size;
+    c->size = next_prime(size);
     c->count = 0;
+    c->load = 0;
     c->nodes = calloc((size_t) c->size, sizeof(node *));
 
     if (c->nodes == NULL) {
@@ -68,7 +70,7 @@ void cache_delete(cache *c) {
     free(c);
 }
 
-static void resize(cache *to_resize, int size) {
+static void resize(cache *c, int size) {
     if (size < INITIAL_CACHE_SIZE) {
         return;
     }
@@ -77,21 +79,25 @@ static void resize(cache *to_resize, int size) {
     cache *tmp_cache = cache_new_sized(size);
 
     //  Insert all nodes into the new cache
-    for (int i = 0; i < to_resize->size; i++) {
-        node *n = to_resize->nodes[i];
+    for (int i = 0; i < c->size; i++) {
+        node *n = c->nodes[i];
 
         if (n != NULL) {
             set(tmp_cache, n->key, n->value);
         }
     }
 
+    // Set new count and load value
+    c->count = tmp_cache->count;
+    c->load = tmp_cache->load;
+
     // Swap between temp and actual cache
-    int tmp_size = to_resize->size;
-    to_resize->size = tmp_cache->size;
+    int tmp_size = c->size;
+    c->size = tmp_cache->size;
     tmp_cache->size = tmp_size;
 
-    node **tmp_nodes = to_resize->nodes;
-    to_resize->nodes = tmp_cache->nodes;
+    node **tmp_nodes = c->nodes;
+    c->nodes = tmp_cache->nodes;
     tmp_cache->nodes = tmp_nodes;
 
     // Delete the temporary cache
@@ -118,7 +124,9 @@ char* get(cache *c, const char *key) {
 }
 
 void set(cache *c, const char * key, const char *value) {
+    // Calculate and set the cache load
     int load = (c->count * 100) / c->size;
+    c->load = load;
 
     // If the cache load is greater than 70% resize it up to the double
     // of the actual size
@@ -126,16 +134,16 @@ void set(cache *c, const char * key, const char *value) {
         resize(c, c->size * 2);
     }
 
-    node *n = malloc(sizeof(node));
+    node *new_node = malloc(sizeof(node));
 
-    if (n == NULL) {
+    if (new_node == NULL) {
         perror("Cannot instantiate a single node");
         exit(EXIT_FAILURE);
     }
 
-    n->key = strdup(key);
-    n->value = strdup(value);
-    int index = get_hash(n->key, c->size, 0);
+    new_node->key = strdup(key);
+    new_node->value = strdup(value);
+    int index = get_hash(new_node->key, c->size, 0);
     node * current_node = c->nodes[index];
 
     // Search for an empty position in case of collision
@@ -145,15 +153,15 @@ void set(cache *c, const char * key, const char *value) {
         // delete it and insert the new one
         if (strcmp(current_node->key, key) == 0) {
             delete_node(current_node);
-            c->nodes[index] = n;
+            c->nodes[index] = new_node;
             return;
         }
 
-        index = get_hash(n->key, c->size, i); // Recalculate the hash with a different attempt value
+        index = get_hash(new_node->key, c->size, i); // Recalculate the hash with a different attempt value
         current_node = c->nodes[index];
         i++;
     }
 
-    c->nodes[index] = n;
+    c->nodes[index] = new_node;
     c->count++;
 }
