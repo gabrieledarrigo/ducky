@@ -21,8 +21,13 @@ static int get_hash(const char *string, int num_nodes, int attempt) {
     int first_hash = hash(string, CACHE_PRIME_1, num_nodes);
     int second_hash = hash(string, CACHE_PRIME_2, num_nodes);
 
+    if (second_hash % num_nodes == 0) {
+        second_hash = 1;
+    }
+
     // Compute a double hash, depending on the number of collisions
-    return (first_hash + (attempt * (second_hash + 1))) % num_nodes;
+    return (first_hash + (attempt * (second_hash))) % num_nodes;
+//    return (first_hash + (attempt * (second_hash + 1))) % num_nodes;
 }
 
 static cache *cache_new_sized(int size) {
