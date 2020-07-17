@@ -21,7 +21,7 @@ TEST should_insert_a_new_node_in_the_cache(void) {
     ASSERT_EQ(1, c->count);
 
     for (int i = 0; i < c->size; i++) {
-        node * current_node = c->nodes[i];
+        node *current_node = c->nodes[i];
 
         if (c->nodes[i] != NULL) {
             ASSERT_STR_EQ("key", current_node->key);
@@ -38,7 +38,7 @@ TEST should_support_the_insertion_of_a_lot_of_entry(void) {
     char key[100];
     char value[100];
 
-    for(int i = 0; i < 100000; i++) {
+    for (int i = 0; i < 100000; i++) {
         sprintf(key, "key %i", i);
         sprintf(value, "value %i", i);
 
@@ -60,7 +60,7 @@ TEST should_update_a_value_with_the_same_key(void) {
     ASSERT_EQ(1, c->count);
 
     for (int i = 0; i < c->size; i++) {
-        node * current_node = c->nodes[i];
+        node *current_node = c->nodes[i];
 
         if (c->nodes[i] != NULL) {
             ASSERT_STR_EQ("key", current_node->key);
@@ -76,7 +76,7 @@ TEST should_return_the_value_of_the_associated_key_if_it_exists(void) {
     cache *c = cache_new();
 
     set(c, "key", "value");
-    char * value = get(c, "key");
+    char *value = get(c, "key");
 
     ASSERT_STR_EQ("value", value);
 
@@ -86,7 +86,7 @@ TEST should_return_the_value_of_the_associated_key_if_it_exists(void) {
 
 TEST should_return_NULL_if_the_associated_key_doesnt_exists(void) {
     cache *c = cache_new();
-    char * value = get(c, "key");
+    char *value = get(c, "key");
 
     ASSERT_EQ(NULL, value);
 
@@ -131,7 +131,7 @@ TEST should_return_the_same_hash_given_the_same_value(void) {
     PASS();
 }
 
-SUITE(suite) {
+SUITE (suite) {
     RUN_TEST(should_create_a_new_cache);
     RUN_TEST(should_insert_a_new_node_in_the_cache);
     RUN_TEST(should_update_a_value_with_the_same_key);

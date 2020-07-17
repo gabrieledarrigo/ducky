@@ -51,7 +51,7 @@ cache *cache_new() {
     return cache_new_sized(INITIAL_CACHE_SIZE);
 }
 
-static void delete_node(node * n) {
+static void delete_node(node *n) {
     free(n->key);
     free(n->value);
     free(n);
@@ -104,14 +104,14 @@ static void resize(cache *c, int size) {
     cache_delete(tmp_cache);
 }
 
-char* get(cache *c, const char *key) {
+char *get(cache *c, const char *key) {
     int index = get_hash(key, c->size, 0);
     node *current_node = c->nodes[index];
 
     // Search for the node with the same key
     int i = 1;
     while (current_node != NULL) {
-        if(strcmp(current_node->key, key) == 0) {
+        if (strcmp(current_node->key, key) == 0) {
             return current_node->value;
         }
 
@@ -123,7 +123,7 @@ char* get(cache *c, const char *key) {
     return NULL;
 }
 
-void set(cache *c, const char * key, const char *value) {
+void set(cache *c, const char *key, const char *value) {
     // Calculate and set the cache load
     int load = (c->count * 100) / c->size;
     c->load = load;
@@ -144,7 +144,7 @@ void set(cache *c, const char * key, const char *value) {
     new_node->key = strdup(key);
     new_node->value = strdup(value);
     int index = get_hash(new_node->key, c->size, 0);
-    node * current_node = c->nodes[index];
+    node *current_node = c->nodes[index];
 
     // Search for an empty position in case of collision
     int i = 1;

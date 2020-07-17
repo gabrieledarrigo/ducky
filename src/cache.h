@@ -17,13 +17,13 @@ typedef struct cache {
     node **nodes;
 } cache;
 
-int hash(const char * string, int prime, int size);
+int hash(const char *string, int prime, int size);
 
 cache *cache_new();
 
 void cache_delete(cache *c);
 
-char* get(cache *c, const char *key);
+char *get(cache *c, const char *key);
 
 void set(cache *c, const char *key, const char *value);
 

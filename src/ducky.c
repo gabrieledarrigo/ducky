@@ -64,14 +64,14 @@ void handle_connection(int sockfd, cache *memory) {
 
     int result;
     if ((result = parse_command(buffer, &c)) < 0) {
-        fprintf( stderr, "Error, cannot parse format: %i\n", result);
+        fprintf(stderr, "Error, cannot parse format: %i\n", result);
         return;
     }
 
     printf("Command is type: %i, key: %s, data: %s\n", c.command_type, c.key, c.data);
 
     if (c.command_type == GET) {
-        char* data = get(memory, c.key);
+        char *data = get(memory, c.key);
         printf("Data is %s\n", data);
         return;
     }

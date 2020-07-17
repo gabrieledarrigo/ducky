@@ -47,8 +47,8 @@ TEST should_return_ERR_NO_KEY_if_the_GET_command_has_not_an_associated_key(void)
     char buffer[] = "GET";
     int result = parse_command(buffer, &get);
 
-        ASSERT_EQ(ERR_NO_KEY, result);
-        PASS();
+    ASSERT_EQ(ERR_NO_KEY, result);
+    PASS();
 }
 
 TEST should_return_ERR_KEY_LENGTH_if_the_GET_or_SET_key_length_is_greater_than_100_chars(void) {
@@ -93,7 +93,7 @@ TEST should_return_ERR_MAX_DATA_SIZE_if_the_command_size_is_greater_than_1MB(voi
     PASS();
 }
 
-SUITE(suite) {
+SUITE (suite) {
     RUN_TEST(should_parse_a_SET_command_from_a_string);
     RUN_TEST(should_return_ERR_NO_KEY_if_the_SET_command_has_not_an_associated_key);
     RUN_TEST(should_return_ERR_NO_DATA_if_the_SET_command_has_no_data_associated);

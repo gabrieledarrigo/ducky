@@ -3,14 +3,14 @@
 #include <stddef.h>
 #include "command.h"
 
-int parse_command(char * buffer, command* c) {
+int parse_command(char *buffer, command *c) {
     int i = 0;
     char *delimiter = " ";
     char *token = strtok(buffer, delimiter);
     char **arr = calloc(3, sizeof(char *));
 
     while (token != NULL) {
-        if (strlen(token) > MAX_DATA_SIZE)  {
+        if (strlen(token) > MAX_DATA_SIZE) {
             return ERR_MAX_DATA_SIZE;
         }
 
