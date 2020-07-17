@@ -1,19 +1,21 @@
 # Ducky
 A quack quacky UDP cache server 🦆
 
+![C/C++ CI](https://github.com/gabrieledarrigo/ducky/workflows/C/C++%20CI/badge.svg?branch=master)
+
 ### Protocol
 
-Clients of ducky communicate with the server through UDP.
-Ducky listens on port 20017 for incoming messages; since ducky doesn't support TCP connection, clients simply open a UDP socket 
-with the given port and send the commands within a datagram.
-Ducky focuses on velocity and bandwidth saving, reducing the latency overhead of a classic TCP connection.
+Clients of ducky communicate with the server through **UDP**.  
+Ducky listens on port **20017** for incoming messages; since ducky doesn't support TCP connection, clients simply open a UDP socket 
+with the given port and send the commands within a datagram.  
+Ducky focuses on velocity and bandwidth saving, reducing the latency overhead of a classic TCP connection.  
 
-Data sent in ducky protocol (both requests and respondes) is in ASCII.
+Data sent in ducky protocol (both requests and respondes) is in ASCII.  
 Each message corresponds to a command that a client sends to the server or a response from the server;  
-a message is made up of the name of the command, optional command parameters, and the structured data that clients want to store or retrieve from ducky.
-A message is always terminated by the sequence of \r\n characters that determines where the data blocks end.
-Each response from the server has a status code that specifies the result of the command:
-200 for a successful operation, 500 for an errored operation. 
+a message is made up of the name of the command, optional command parameters, and the structured data that clients want to store or retrieve from ducky.  
+A message is always terminated by the sequence of `\r\n` characters that determines where the data blocks end.  
+Each response from the server has a status code that specifies the result of the command:  
+2xx for a successful operation, 5xx for an errored operation. 
 One client/server session has the following lifecycle:  
 
 1. The server listens on port 20017.
@@ -32,15 +34,16 @@ One client/server session has the following lifecycle:
 
 Data stored by ducky is uniquely identified with the help of a key.  
 A key is a string which uniquely identifies the data for clients
-that wants to store and retrieve it.
-The maximum length limit of a key is 100 characters.  
-The maximum size for data to be stored is 1MB.   
+that wants to store and retrieve it.  
+The maximum length limit of a key is **100** characters.  
+The maximum size for data to be stored is **1MB**.   
 Internally ducky uses a hashmap data structure to store the data.  
 
 #### Commands
 
-Ducky supports only two commands, SET to store some unstructured data identified by a key and GET to retrieve some data corresponding
-to a specific key.
+Ducky supports only two commands:  
+SET to store some unstructured data identified by a key and GET to retrieve some data corresponding
+to a specific key.  
 The semantics is the following:  
 
 ##### SET
@@ -59,8 +62,8 @@ GET key
 
 Each ducky response is made up of a status code and an optional payload.  
 Status codes are divided into two families:
-The 2xx status codes indicate that the request has succeeded.
-The 5xx status codes indicate that the server encountered an error.  
+- The 2xx status codes indicate that the request has succeeded.
+- The 5xx status codes indicate that the server encountered an error.  
 
 ##### 200 (OK)
 Is sent after a successful GET operation.
