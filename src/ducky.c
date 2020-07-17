@@ -82,7 +82,7 @@ void handle_connection(int sockfd, cache *memory) {
     }
 }
 
-void main() {
+int main() {
     int sockfd, maxfd;
     fd_set active_fds;
     fd_set read_fds;

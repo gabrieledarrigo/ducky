@@ -119,22 +119,22 @@ TEST should_resize_up_to_the_double_size_when_the_cache_is_full_at_70_percent(vo
 }
 
 TEST should_return_the_same_hash_given_the_same_value(void) {
-    int first = hash("string", CACHE_PRIME_1,1024);
-    int second = hash("string", CACHE_PRIME_1,1024);
+    int first_hash = hash("string", CACHE_PRIME_1, INITIAL_CACHE_SIZE);
+    int second_hash = hash("string", CACHE_PRIME_1, INITIAL_CACHE_SIZE);
 
-    ASSERT_EQ(first, second);
+    ASSERT_EQ(first_hash, second_hash);
     PASS();
 }
 
 SUITE(suite) {
-    RUN_TEST(should_return_the_same_hash_given_the_same_value);
-    RUN_TEST(should_create_a_new_cache);
-    RUN_TEST(should_insert_a_new_node_in_the_cache);
-    RUN_TEST(should_update_a_value_with_the_same_key);
-    RUN_TEST(should_return_the_value_of_the_associated_key_if_it_exists);
-    RUN_TEST(should_return_NULL_if_the_associated_key_doesnt_exists);
-    RUN_TEST(should_support_the_insertion_of_a_lot_of_entry);
+//    RUN_TEST(should_create_a_new_cache);
+//    RUN_TEST(should_insert_a_new_node_in_the_cache);
+//    RUN_TEST(should_update_a_value_with_the_same_key);
+//    RUN_TEST(should_return_the_value_of_the_associated_key_if_it_exists);
+//    RUN_TEST(should_return_NULL_if_the_associated_key_doesnt_exists);
+//    RUN_TEST(should_support_the_insertion_of_a_lot_of_entry);
     RUN_TEST(should_resize_up_to_the_double_size_when_the_cache_is_full_at_70_percent);
+//    RUN_TEST(should_return_the_same_hash_given_the_same_value);
 }
 
 GREATEST_MAIN_DEFS();

@@ -9,7 +9,7 @@ int hash(const char *string, int prime, int size) {
     int len = (int) strlen(string);
 
     for (int i = 0; i < len; i++) {
-        hash += (long) pow(prime, len - (i + 1) * string[i]); // Compute a large integer number
+        hash += (long) pow(prime, len - (i + 1)) * string[i]; // Compute a large integer number
         hash = hash % size; // Get the reminder
     }
 
@@ -21,7 +21,7 @@ static int get_hash(const char *string, int num_nodes, int attempt) {
     int second_hash = hash(string, CACHE_PRIME_2, num_nodes);
 
     // Compute a double hash, depending on the number of collisions
-    return (first_hash + attempt * (second_hash + 1)) % num_nodes;
+    return (first_hash + (attempt * (second_hash + 1))) % num_nodes;
 }
 
 static cache *cache_new_sized(int size) {
@@ -60,9 +60,7 @@ void cache_delete(cache *c) {
         node *n = c->nodes[i];
 
         if (n != NULL) {
-            free(n->key);
-            free(n->value);
-            free(n);
+            delete_node(n);
         }
     }
 
