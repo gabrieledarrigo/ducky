@@ -54,6 +54,7 @@ void handle_connection(int sockfd, cache *memory) {
     int received = receive(sockfd, buffer, BUFFER_SIZE, (struct sockaddr *) &client_address, &client_address_len);
 
     if (received == -1) {
+        // @TODO returns 5xx with the error
         perror("Error while receiveing data");
     }
 
@@ -65,6 +66,8 @@ void handle_connection(int sockfd, cache *memory) {
     int result;
     if ((result = parse_command(buffer, &c)) < 0) {
         fprintf(stderr, "Error, cannot parse format: %i\n", result);
+
+        // @TODO returns 5xx with the error
         return;
     }
 
@@ -73,11 +76,15 @@ void handle_connection(int sockfd, cache *memory) {
     if (c.command_type == GET) {
         char *data = get(memory, c.key);
         printf("Data is %s\n", data);
+
+        // @TODO returns 200 data
         return;
     }
 
     if (c.command_type == SET) {
         set(memory, c.key, c.data);
+
+        // @TODO returns 201 data
         return;
     }
 }
