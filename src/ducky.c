@@ -99,7 +99,7 @@ void handle_connection(int sockfd, cache *memory) {
         char *data = get(memory, c.key);
 
         if (data == NULL) {
-            error_t err = get_error_t(ERR_NO_DATA);
+            error_t err = get_error_t(ERR_NOT_FOUND);
             send_response(sockfd, (struct sockaddr *) &client_address, client_address_len, errort_to_response(err));
 
             return;
