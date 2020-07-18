@@ -48,7 +48,7 @@ int receive(int sockfd, char *buffer, size_t size, struct sockaddr *sockaddr, so
     }
 
     buffer[received] = '\0';
-    logs(LOG_INFO, "Received buffer with len: %lu, %s\n", strlen(buffer), buffer);
+    logs(LOG_INFO, "Received buffer with len: %lu, %s", strlen(buffer), buffer);
 
     return received;
 }
@@ -61,7 +61,7 @@ int send_response(int sockfd, struct sockaddr *sockaddr, socklen_t sockaddr_len,
         logs(LOG_ERROR, "Cannot send a response: ", strerror(errno));
     }
 
-    logs(LOG_INFO, "Sent %i byte, response is %s\n", sent, res.data);
+    logs(LOG_INFO, "Sent %i byte, response is %s", sent, res.data);
     return sent;
 }
 
@@ -86,7 +86,7 @@ void handle_connection(int sockfd, cache *memory) {
 
     int parse_result;
     if ((parse_result = parse_command(buffer, &c)) < 0) {
-        logs(LOG_ERROR, "Error, cannot parse format: %i\n", parse_result);
+        logs(LOG_ERROR, "Error, cannot parse format: %i", parse_result);
         error_t err = get_error_t(parse_result);
         send_response(sockfd, (struct sockaddr *) &client_address, client_address_len, errort_to_response(err));
 

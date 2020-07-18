@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
@@ -12,20 +13,24 @@ static const char *log_levels[] = {
     "FATAL"
 };
 
-char *event_date(char* buffer) {
+//char *event_date(char *buffer) {
+//    time_t t = time(NULL);
+//    size_t len = strftime(buffer, sizeof(buffer), "%H:%M:%S", localtime(&t));
+//    buffer[len] = '\0';
+//
+//    return buffer;
+//}
+
+void logs(log_level level, const char *fmt, ...) {
+    char buffer[100];
     time_t t = time(NULL);
     size_t len = strftime(buffer, sizeof(buffer), "%H:%M:%S", localtime(&t));
     buffer[len] = '\0';
 
-    return buffer;
-}
-
-void logs(log_level level, const char *fmt, ...) {
-    char buffer[100];
     va_list ap;
     va_start(ap, fmt);
 
-    fprintf(stderr, "%s %-5s ", event_date(buffer), log_levels[level]);
+    fprintf(stderr, "%s %-5s ", buffer, log_levels[level]);
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
     fflush(stderr);
