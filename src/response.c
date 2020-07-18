@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "errors.h"
 #include "response.h"
 
 char *response_to_string(response res) {
@@ -10,4 +11,43 @@ char *response_to_string(response res) {
     snprintf(buffer, to_allocate, "%i %s\n", res.status_code, res.data);
 
     return buffer;
+}
+
+response errort_to_response(error_t error) {
+    response res;
+
+    switch (error.code) {
+        case ERR_UNKNOWN:
+            res.status_code = STATUS_ERR_UNKNOWN;
+            break;
+        case ERR_CANNOT_RECV:
+            res.status_code = STATUS_ERR_CANNOT_RECV;
+            break;
+        case ERR_CANNOT_SEND:
+            res.status_code = STATUS_ERR_CANNOT_SEND;
+            break;
+        case ERR_COMMAND_NOT_RECOGNIZED:
+            res.status_code = STATUS_ERR_COMMAND_NOT_RECOGNIZED;
+            break;
+        case ERR_MAX_DATA_SIZE:
+            res.status_code = STATUS_ERR_MAX_DATA_SIZE;
+            break;
+        case ERR_KEY_LENGTH:
+            res.status_code = STATUS_ERR_KEY_LENGTH;
+            break;
+        case ERR_NO_KEY:
+            res.status_code = STATUS_ERR_NO_KEY;
+            break;
+        case ERR_NO_DATA:
+            res.status_code = STATUS_ERR_NO_DATA;
+            break;
+        case ERR_NOT_FOUND:
+            res.status_code = STATUS_ERR_NOT_FOUND;
+            break;
+        default:
+            res.status_code = STATUS_ERR_UNKNOWN;
+    }
+
+    res.data = error.message;
+    return res;
 }

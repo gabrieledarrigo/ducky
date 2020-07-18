@@ -36,6 +36,10 @@ error_t get_error_t(int error_code) {
             err.code = ERR_NO_DATA;
             err.message = "ERR_NO_DATA";
             break;
+        case ERR_NOT_FOUND:
+            err.code = ERR_NOT_FOUND;
+            err.message = "ERR_NOT_FOUND";
+            break;
         default:
             err.code = ERR_UNKNOWN;
             err.message = "ERR_UNKNOWN";

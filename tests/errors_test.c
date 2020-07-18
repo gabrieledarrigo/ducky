@@ -25,6 +25,9 @@ TEST should_return_the_related_error_t(void) {
 
     ASSERT_EQ(ERR_NO_DATA, get_error_t(-8).code);
     ASSERT_STR_EQ("ERR_NO_DATA", get_error_t(-8).message);
+
+    ASSERT_EQ(ERR_NOT_FOUND, get_error_t(-9).code);
+    ASSERT_STR_EQ("ERR_NOT_FOUND", get_error_t(-9).message);
     PASS();
 }
 
