@@ -17,7 +17,7 @@ TEST should_convert_a_response_into_a_string(void) {
     };
 
     for (int i = 0; i < sizeof(responses) / sizeof(responses[0]); i++) {
-        sprintf(buffer, "%i %s\n", responses[i].status_code, responses[i].data);
+        snprintf(buffer, 128, "%i %s\n", responses[i].status_code, responses[i].data);
         ASSERT_STR_EQ(buffer, response_to_string(responses[i]));
     }
 
