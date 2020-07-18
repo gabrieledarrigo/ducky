@@ -12,6 +12,10 @@ error_t get_error_t(int error_code) {
             err.code = ERR_CANNOT_RECV;
             err.message = "ERR_CANNOT_RECV";
             break;
+        case ERR_CANNOT_SEND:
+            err.code = ERR_CANNOT_SEND;
+            err.message = "ERR_CANNOT_SEND";
+            break;
         case ERR_COMMAND_NOT_RECOGNIZED:
             err.code = ERR_COMMAND_NOT_RECOGNIZED;
             err.message = "ERR_COMMAND_NOT_RECOGNIZED";
