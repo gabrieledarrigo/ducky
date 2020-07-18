@@ -115,7 +115,7 @@ TEST should_resize_up_to_the_double_size_when_the_cache_is_full_at_70_percent(vo
 
     ASSERT_EQ(expected_size, c->size);
     ASSERT_EQ(fill, c->count);
-//    ASSERT_EQ(70, c->load);
+    ASSERT_EQ(70, c->load);
 
     set(c, "key resize", "value resize");
 

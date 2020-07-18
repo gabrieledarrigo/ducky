@@ -3,7 +3,9 @@
 #include <string.h>
 #include <strings.h>
 #include <netinet/in.h>
+#include <errno.h>
 #include "errors.h"
+#include "logger.h"
 #include "response.h"
 #include "command.h"
 #include "cache.h"
@@ -21,7 +23,7 @@ int make_socket(int port, int reuse) {
     sockaddr.sin_addr.s_addr = htons(INADDR_ANY);
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-        perror("Cannot create socket");
+        logs(LOG_FATAL, "Cannot create the socket: ", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
@@ -31,7 +33,7 @@ int make_socket(int port, int reuse) {
     }
 
     if (bind(sockfd, (struct sockaddr *) &sockaddr, sizeof(sockaddr)) == -1) {
-        perror("Cannot create socket");
+        logs(LOG_FATAL, "Cannot bind the address to the socket: ", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
@@ -46,6 +48,8 @@ int receive(int sockfd, char *buffer, size_t size, struct sockaddr *sockaddr, so
     }
 
     buffer[received] = '\0';
+    logs(LOG_INFO, "Received buffer with len: %lu, %s\n", strlen(buffer), buffer);
+
     return received;
 }
 
@@ -54,11 +58,10 @@ int send_response(int sockfd, struct sockaddr *sockaddr, socklen_t sockaddr_len,
     char *str = response_to_string(res);
 
     if ((sent = sendto(sockfd, str, strlen(str), 0, sockaddr, sockaddr_len)) == -1) {
-        perror("Cannot send response");
+        logs(LOG_ERROR, "Cannot send a response: ", strerror(errno));
     }
 
-    printf("Sent %i byte, response is %s\n", sent, res.data);
-
+    logs(LOG_INFO, "Sent %i byte, response is %s\n", sent, res.data);
     return sent;
 }
 
@@ -71,29 +74,24 @@ void handle_connection(int sockfd, cache *memory) {
     int received = receive(sockfd, buffer, BUFFER_SIZE, (struct sockaddr *) &client_address, &client_address_len);
 
     if (received == -1) {
-        perror("Error while receiving data");
+        logs(LOG_ERROR, "Error while receiving data: ", strerror(errno));
         error_t err = get_error_t(ERR_CANNOT_RECV);
         send_response(sockfd, (struct sockaddr *) &client_address, client_address_len, errort_to_response(err));
 
         return;
     }
 
-    printf("Received buffer with len: %lu, %s\n", strlen(buffer), buffer);
-
     command c;
     bzero(&c, sizeof(c));
 
     int parse_result;
     if ((parse_result = parse_command(buffer, &c)) < 0) {
-        fprintf(stderr, "Error, cannot parse format: %i\n", parse_result);
-
+        logs(LOG_ERROR, "Error, cannot parse format: %i\n", parse_result);
         error_t err = get_error_t(parse_result);
         send_response(sockfd, (struct sockaddr *) &client_address, client_address_len, errort_to_response(err));
 
         return;
     }
-
-    printf("Command is type: %i, key: %s, data: %s\n", c.command_type, c.key, c.data);
 
     if (c.command_type == GET) {
         char *data = get(memory, c.key);
@@ -137,8 +135,8 @@ int main() {
         read_fds = active_fds;
 
         if (select(maxfd + 1, &read_fds, NULL, NULL, NULL) == -1) {
-            perror("Error during select operation");
-            exit(1);
+            logs(LOG_FATAL, "Error during select operation", strerror(errno));
+            exit(EXIT_FAILURE);
         }
 
         for (int i = 0; i <= maxfd; i++) {

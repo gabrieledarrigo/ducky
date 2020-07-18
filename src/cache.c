@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <math.h>
+#include <errno.h>
 #include "cache.h"
 #include "prime.h"
+#include "logger.h"
 
 int hash(const char *string, int prime, int size) {
     long hash = 0;
@@ -27,14 +28,13 @@ static int get_hash(const char *string, int num_nodes, int attempt) {
 
     // Compute a double hash, depending on the number of collisions
     return (first_hash + (attempt * (second_hash))) % num_nodes;
-//    return (first_hash + (attempt * (second_hash + 1))) % num_nodes;
 }
 
 static cache *cache_new_sized(int size) {
     cache *c = malloc(sizeof(cache));
 
     if (c == NULL) {
-        perror("Cannot instantiate Cache data structure");
+        logs(LOG_FATAL, "Cannot allocate to create new cache data structure: %s", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
@@ -45,7 +45,7 @@ static cache *cache_new_sized(int size) {
 
     if (c->nodes == NULL) {
         free(c);
-        perror("Cannot instantiate Cache nodes");
+        logs(LOG_FATAL, "Cannot allocate to create cache nodes: %s", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
@@ -142,7 +142,7 @@ void set(cache *c, const char *key, const char *value) {
     node *new_node = malloc(sizeof(node));
 
     if (new_node == NULL) {
-        perror("Cannot instantiate a single node");
+        logs(LOG_FATAL, "Cannot allocate to create a single cache node: %s", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
