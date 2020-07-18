@@ -103,15 +103,15 @@ void handle_connection(int sockfd, cache *memory) {
             return;
         }
 
-        response res = { STATUS_SUCCESS, data };
-        send_response(sockfd,(struct sockaddr *) &client_address, client_address_len, res);
+        response res = {STATUS_SUCCESS, data};
+        send_response(sockfd, (struct sockaddr *) &client_address, client_address_len, res);
 
         return;
     }
 
     if (c.command_type == SET) {
         set(memory, c.key, c.data);
-        response res = { STATUS_CREATED, "CREATED" };
+        response res = {STATUS_CREATED, "CREATED"};
         send_response(sockfd, (struct sockaddr *) &client_address, client_address_len, res);
 
         return;
