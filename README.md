@@ -76,7 +76,7 @@ Is sent after a successful GET operation.
 Is sent after a successful SET operation.
 
 ```
-201 CREATED
+201 STATUS_CREATED
 ```
 
 ##### 500 (Generic error)
