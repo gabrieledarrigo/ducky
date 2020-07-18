@@ -14,6 +14,18 @@ TEST should_parse_a_SET_command_from_a_string(void) {
     PASS();
 }
 
+TEST should_parse_a_SET_command_with_white_space_in_data(void) {
+    command c;
+    char buffer[] = "SET key this data has whitespaces in it";
+    int result = parse_command(buffer, &c);
+
+    ASSERT_EQ(0, result);
+    ASSERT_EQ(SET, c.command_type);
+    ASSERT_STR_EQ("key", c.key);
+    ASSERT_STR_EQ("this data has whitespaces in it", c.data);
+    PASS();
+}
+
 TEST should_return_ERR_NO_KEY_if_the_SET_command_has_not_an_associated_key(void) {
     command c;
     char buffer[] = "SET";
@@ -96,6 +108,7 @@ TEST should_return_ERR_MAX_DATA_SIZE_if_the_command_size_is_greater_than_1MB(voi
 
 SUITE (suite) {
     RUN_TEST(should_parse_a_SET_command_from_a_string);
+    RUN_TEST(should_parse_a_SET_command_with_white_space_in_data);
     RUN_TEST(should_return_ERR_NO_KEY_if_the_SET_command_has_not_an_associated_key);
     RUN_TEST(should_return_ERR_NO_DATA_if_the_SET_command_has_no_data_associated);
     RUN_TEST(should_parse_a_GET_command_from_a_string);

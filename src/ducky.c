@@ -124,7 +124,6 @@ int main() {
     int sockfd, maxfd;
     fd_set active_fds;
     fd_set read_fds;
-    fd_set write_fds;
 
     cache *memory = cache_new();
     sockfd = make_socket(PORT, 1);
@@ -132,7 +131,6 @@ int main() {
 
     FD_ZERO(&active_fds);
     FD_ZERO(&read_fds);
-    FD_ZERO(&write_fds);
     FD_SET(sockfd, &active_fds);
 
     while (1) {
@@ -146,10 +144,6 @@ int main() {
         for (int i = 0; i <= maxfd; i++) {
             if (FD_ISSET(i, &read_fds)) {
                 handle_connection(i, memory);
-            }
-
-            if (FD_ISSET(i, &write_fds)) {
-                printf("I can write");
             }
         }
     }
