@@ -13,9 +13,9 @@ Ducky focuses on velocity and bandwidth saving, reducing the latency overhead of
 Data sent in ducky protocol (both requests and respondes) is in ASCII.  
 Each message corresponds to a command that a client sends to the server or a response from the server;  
 a message is made up of the name of the command, optional command parameters, and the structured data that clients want to store or retrieve from ducky.  
-A message is always terminated by the sequence of `\r\n` characters that determines where the data blocks end.  
+A message is always terminated by a `\n` characters that determines where the data blocks end.  
 Each response from the server has a status code that specifies the result of the command:  
-2xx for a successful operation, 5xx for an errored operation. 
+2xx for a successful operation, 5xx for an errored operation.  
 One client/server session has the following lifecycle:  
 
 1. The server listens on port 20017.
@@ -32,12 +32,13 @@ One client/server session has the following lifecycle:
 
 #### Keys and memory structure
 
-Data stored by ducky is uniquely identified with the help of a key.  
-A key is a string which uniquely identifies the data for clients
-that wants to store and retrieve it.  
+Data stored in ducky is identified with the help of a key.  
+A key is a string which uniquely identifies the data for clients that wants to store and retrieve it.  
+Internally ducky uses a Hash Table data structure. It offers a O(1) algorithmic complexity for both store and retrieve data within a given key.
+The hash table implementation...@TBD
+
 The maximum length limit of a key is **100** characters.  
 The maximum size for data to be stored is **1MB**.   
-Internally ducky uses a hashmap data structure to store the data.  
 
 #### Commands
 
