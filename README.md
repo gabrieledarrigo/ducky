@@ -1,5 +1,8 @@
 # Ducky
-A quack quacky UDP cache server 🦆 developed for the Networking course of ["Sicurezza dei Sistemi e Delle Reti Informatiche"](http://sicurezzaonline.di.unimi.it/) bachelor's degree program.
+  
+![Ducky](https://user-images.githubusercontent.com/1985555/91746299-ac944a80-ebbc-11ea-808f-bfae2586955b.png)  
+
+A quack quacky UDP cache server 🦆 developed for the Networking course of ["Sicurezza dei Sistemi e Delle Reti Informatiche"](http://sicurezzaonline.di.unimi.it/) bachelor's degree program.  
 
 ![C/C++ CI](https://github.com/gabrieledarrigo/ducky/workflows/C/C++%20CI/badge.svg?branch=master)
 
@@ -195,3 +198,7 @@ It was impossible to implement Ducky without some great books, article and mater
 - The super cool [C Hash Table implementation](https://github.com/jamesroutley/write-a-hash-table) by James 明良 Routley, that I used as an example to implements the internal memory cache of Ducky
 - A useful book on network programming [Hands-On Network Programming with C](https://www.packtpub.com/networking-and-servers/hands-network-programming-c)
 - The essential [Beej's Guide to Network Programming](http://beej.us/guide/bgnet/), really worth a read!
+
+## Contributors
+
+A huge thanks goes to [Roberto Carrà](https://www.linkedin.com/in/robertocarra) for his precious work on the logo.
