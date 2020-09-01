@@ -37,6 +37,8 @@ int make_socket(int port, int reuse) {
         exit(EXIT_FAILURE);
     }
 
+    logs(LOG_INFO, "Ducky up and running, listening on port 20017");
+
     return sockfd;
 }
 
