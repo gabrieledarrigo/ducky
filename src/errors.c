@@ -1,5 +1,11 @@
 #include "errors.h"
 
+/**
+ * Create an error_t struct where the code and message members values depends on the value of the error_code parameter.
+ *
+ * @param error_code    an integer representing a Ducky internal error code
+ * @return              an error_t struct
+ */
 error_t get_error_t(int error_code) {
     error_t err;
 

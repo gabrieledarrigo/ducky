@@ -1,6 +1,12 @@
 #include <math.h>
 #include "prime.h"
 
+/**
+ * Check if the integer n is a prime number.
+ *
+ * @param n     the number to check
+ * @return      1 if n is a prime number, 0 otherwise
+ */
 int is_prime(int n) {
     if (n <= 1) {
         return 0;
@@ -23,10 +29,16 @@ int is_prime(int n) {
     return 1;
 }
 
-int next_prime(int x) {
-    while (is_prime(x) != 1) {
-        x++;
+/**
+ * Compute the next prime number after n.
+ *
+ * @param n     the integer from which the search for the next prime number starts
+ * @return      the next prime after n
+ */
+int next_prime(int n) {
+    while (is_prime(n) != 1) {
+        n++;
     }
 
-    return x;
+    return n;
 }

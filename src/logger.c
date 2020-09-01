@@ -13,6 +13,13 @@ static const char *log_levels[] = {
     "FATAL"
 };
 
+/**
+ * A variadic function that logs to stderr.
+ *
+ * @param level     the desired log level
+ * @param fmt       a C string that contains the text to be written to stderr. It can optionally contain embedded format specifiers
+ * @param ...
+ */
 void logs(log_level level, const char *fmt, ...) {
     char buffer[100];
     time_t t = time(NULL);
