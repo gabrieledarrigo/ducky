@@ -10,8 +10,8 @@ Ducky is an network cache server written in C.
 It stores unstructured data sent from a client in memory, ready to be served when a client asks for it using a unique key.  
 Ducky's principal purpose is to reduce networking and computation load from a server (for example, an API, a Web application, or a database) so that a client can store data that is accessed with a high frequency, increasing the overall performance of the system.  
 Ducky is loosely inspired by projects like [Memcached](https://github.com/memcached/memcached) and [Redis](https://github.com/redis/redis).  
-While Ducky's approach to the "key-value" server implementation is naive, it worked well as a demonstrative and learning project on how to build a simple networking server.
-Ducky's internal implementation is illustrated here: [protocol](https://github.com/gabrieledarrigo/ducky/blob/master/PROTOCOL.md).  
+While Ducky's approach to the "key-value" server implementation is naive, it worked well as a demonstrative and learning project on how to build a simple networking server.  
+Ducky's internal implementation is documented here: [protocol](https://github.com/gabrieledarrigo/ducky/blob/master/PROTOCOL.md).  
 
 ## Dependencies
 
