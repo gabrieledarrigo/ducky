@@ -13,6 +13,13 @@
 #define PORT 20017
 #define BUFFER_SIZE 1024 * 1024
 
+/**
+ * Create a an AF_INET socket and bind it to the specified port.
+ *
+ * @param port  the port number
+ * @param reuse an integer that state if the socket must be reused. 1 to reuse the socket
+ * @return      the created socket.
+ */
 int make_socket(int port, int reuse) {
     int sockfd;
     struct sockaddr_in sockaddr;
@@ -22,6 +29,7 @@ int make_socket(int port, int reuse) {
     sockaddr.sin_port = htons(port);
     sockaddr.sin_addr.s_addr = htons(INADDR_ANY);
 
+    // Create the socket
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
         logs(LOG_FATAL, "Cannot create the socket: ", strerror(errno));
         exit(EXIT_FAILURE);
@@ -32,16 +40,27 @@ int make_socket(int port, int reuse) {
         setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(int));
     }
 
+    // Bind the socket to the port
     if (bind(sockfd, (struct sockaddr *) &sockaddr, sizeof(sockaddr)) == -1) {
         logs(LOG_FATAL, "Cannot bind the address to the socket: ", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    logs(LOG_INFO, "Ducky up and running, listening on port 20017");
+    logs(LOG_INFO, "Ducky up and running, listening on port %i", port);
 
     return sockfd;
 }
 
+/**
+ * Read N bytes from the socket and store them in the buffer array.
+ *
+ * @param sockfd           the socket that is used to read data
+ * @param buffer           the buffer that stores data sent from the client
+ * @param size             the size of the buffer
+ * @param sockaddr         the client address
+ * @param sockaddr_len     the length of the client address
+ * @return                 the number of byte received
+ */
 int receive(int sockfd, char *buffer, size_t size, struct sockaddr *sockaddr, socklen_t *sockaddr_len) {
     int received = recvfrom(sockfd, buffer, size, 0, sockaddr, sockaddr_len);
 
@@ -55,6 +74,15 @@ int receive(int sockfd, char *buffer, size_t size, struct sockaddr *sockaddr, so
     return received;
 }
 
+/**
+ * Send a response to the client.
+ *
+ * @param sockfd        the socket that is used to send the data to the client
+ * @param sockaddr      the client address
+ * @param sockaddr_len  the length of the client address
+ * @param res           a response struct with the related status code and data
+ * @return
+ */
 int send_response(int sockfd, struct sockaddr *sockaddr, socklen_t sockaddr_len, response res) {
     int sent;
     char *str = response_to_string(res);
@@ -67,6 +95,12 @@ int send_response(int sockfd, struct sockaddr *sockaddr, socklen_t sockaddr_len,
     return sent;
 }
 
+/**
+ * Handle client connections.
+ *
+ * @param sockfd    the socket that is used to receive and send data from/to the client
+ * @param memory    Ducky's internal cache
+ */
 void handle_connection(int sockfd, cache *memory) {
     char buffer[BUFFER_SIZE] = {0};
     struct sockaddr_in client_address;
@@ -86,6 +120,7 @@ void handle_connection(int sockfd, cache *memory) {
     command c;
     bzero(&c, sizeof(c));
 
+    // Parse the command
     int parse_result;
     if ((parse_result = parse_command(buffer, &c)) < 0) {
         logs(LOG_ERROR, "Error, cannot parse format: %i", parse_result);
@@ -95,6 +130,7 @@ void handle_connection(int sockfd, cache *memory) {
         return;
     }
 
+    // Handle GET command
     if (c.command_type == GET) {
         char *data = get(memory, c.key);
 
@@ -111,6 +147,7 @@ void handle_connection(int sockfd, cache *memory) {
         return;
     }
 
+    // Handle SET command
     if (c.command_type == SET) {
         set(memory, c.key, c.data);
         response res = {STATUS_CREATED, "CREATED"};

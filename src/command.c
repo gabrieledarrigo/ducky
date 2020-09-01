@@ -4,6 +4,23 @@
 #include "errors.h"
 #include "command.h"
 
+/**
+ * Try to parse the buffer parameter into a command that can be recognized by Ducky.
+ * A command is made up of the command name, optional command parameters, and the structured data that clients want to store or retrieve from Ducky.
+ * For example a GET command is the following:
+ *
+ * GET key
+ *
+ * While a SET command has this form:
+ *
+ * SET key data
+ *
+ * If the function is unable to parse the input buffer returns an error code.
+ *
+ * @param buffer    the string the must be parsed into a valid Ducky command
+ * @param c         the command struct
+ * @return          a parsed command or an error code if the buffer cannot be parsed
+ */
 int parse_command(char *buffer, command *c) {
     char *delimiter = " ";
     char *token = strtok(buffer, delimiter);

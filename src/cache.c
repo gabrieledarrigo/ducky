@@ -6,6 +6,16 @@
 #include "prime.h"
 #include "logger.h"
 
+/**
+ * Takes a string as an input and:
+ *  Converts it into a large integer number.
+ *  Reduces the size of the integer to a fixed range, by taking its remainder mod m, where m is the number of buckets of the hash table.
+ *
+ * @param string    the string from which the hash is computed
+ * @param prime     a prime number that is used to calculate the large integer
+ * @param size      the number of nodes in the cache
+ * @return          an
+ */
 int hash(const char *string, int prime, int size) {
     long hash = 0;
     int len = (int) strlen(string);
@@ -18,6 +28,14 @@ int hash(const char *string, int prime, int size) {
     return (int) hash;
 }
 
+/**
+ * Compute a double hash, where the result depends on the number of collisions happened.
+ *
+ * @param string        the string from which the hash is computed
+ * @param num_nodes     the number of nodes in the cache
+ * @param attempt       the number of collided items. It
+ * @return              an index that points to the position where the new item of the cache will be stored
+ */
 static int get_hash(const char *string, int num_nodes, int attempt) {
     int first_hash = hash(string, CACHE_PRIME_1, num_nodes);
     int second_hash = hash(string, CACHE_PRIME_2, num_nodes);
@@ -30,6 +48,12 @@ static int get_hash(const char *string, int num_nodes, int attempt) {
     return (first_hash + (attempt * (second_hash))) % num_nodes;
 }
 
+/**
+ * Create a new cache of the desired size.
+ *
+ * @param size  the size of the cache; ie: the initial number of nodes tha it has.
+ * @return      the created cache
+ */
 static cache *cache_new_sized(int size) {
     cache *c = malloc(sizeof(cache));
 
@@ -52,16 +76,31 @@ static cache *cache_new_sized(int size) {
     return c;
 }
 
+/**
+ * Create a new cache with an initial size equal to 131 (the next prime after INITIAL_CACHE_SIZE)
+ *
+ * @return a cache struct
+ */
 cache *cache_new() {
     return cache_new_sized(INITIAL_CACHE_SIZE);
 }
 
+/**
+ * Free a node from the memory.
+ *
+ * @param n the node that must be deleted
+ */
 static void delete_node(node *n) {
     free(n->key);
     free(n->value);
     free(n);
 }
 
+/**
+ * Delete all nodes from the cache and then free the cache itself from the memory.
+ *
+ * @param c the cache to be deleted
+ */
 void cache_delete(cache *c) {
     for (int i = 0; i < c->size; i++) {
         node *n = c->nodes[i];
@@ -75,6 +114,14 @@ void cache_delete(cache *c) {
     free(c);
 }
 
+/**
+ * Resize the cache to the new size.
+ * First create a temporary cache where all old cache nodes are stored.
+ * Then create a new cache of the desired size, copy all nodes from the temp cache to the new one, and delete the old cache.
+ *
+ * @param c     the cache that needs to be resize
+ * @param size  the new cache size
+ */
 static void resize(cache *c, int size) {
     if (size < INITIAL_CACHE_SIZE) {
         return;
@@ -109,6 +156,13 @@ static void resize(cache *c, int size) {
     cache_delete(tmp_cache);
 }
 
+/**
+ * Get a value from the cache related to the key parameter.
+ *
+ * @param c     the cache where the item is stored
+ * @param key   the key associated to the value that a consumer want to retrieve
+ * @return      the desired value or NULL if it cannot be found
+ */
 char *get(cache *c, const char *key) {
     int index = get_hash(key, c->size, 0);
     node *current_node = c->nodes[index];
@@ -128,6 +182,14 @@ char *get(cache *c, const char *key) {
     return NULL;
 }
 
+/**
+ * Store a value, related to key, in the cache.
+ * If the cache load is greater than 70% it's automatically doubled up in size.
+ *
+ * @param c     the cache where the item will be stored
+ * @param key   the key associated to the value that a consumer want to store
+ * @param value the value that must be stored
+ */
 void set(cache *c, const char *key, const char *value) {
     // Calculate and set the cache load
     int load = (c->count * 100) / c->size;

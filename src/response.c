@@ -6,6 +6,14 @@
 #include "logger.h"
 #include "response.h"
 
+/**
+ * Convert a response struct into a C string of the following shape:
+ *
+ * STATUS_CODE DATA \n
+ *
+ * @param res   the response struct  that must be converted
+ * @return      a C string with representing the response
+ */
 char *response_to_string(response res) {
     // Allocate the len of data + 3 for the status code + 1 white space + 1 \n + 1 for the null terminator
     size_t to_allocate = (strlen(res.data) + 6) * sizeof(char);
@@ -20,6 +28,12 @@ char *response_to_string(response res) {
     return buffer;
 }
 
+/**
+ * Convert an error_t struct into a response
+ *
+ * @param error     the error that must be converted
+ * @return          a response struct
+ */
 response errort_to_response(error_t error) {
     response res;
 
